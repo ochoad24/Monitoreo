@@ -11,6 +11,11 @@
 |
 */
 
-Route::get('/', function () {
-    return view('content');
-});
+    Route::get('/', function () {
+        return view('content');
+    });
+    // Rutas para los roles
+    Route::get('/Rol','RolController@index');
+    Route::post('/Rol/nuevo','RolController@store');
+    Route::put('/Rol/editar','RolController@edit');
+    Route::delete('/Rol/{rol}/delete', 'RolController@drop');

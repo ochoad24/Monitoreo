@@ -9,6 +9,10 @@ require('./bootstrap');
 window.Vue = require('vue');
 import Vuetify from 'vuetify';
 Vue.use(Vuetify);
+
+import swal from 'sweetalert2';
+window.swal = swal;
+
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue
@@ -20,7 +24,7 @@ Vue.use(Vuetify);
 // const files = require.context('./', true, /\.vue$/i);
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default));
 
-Vue.component('Test', require('./components/Test.vue').default);
+Vue.component('Rol', require('./components/Rol.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -32,6 +36,7 @@ Vue.component('Test', require('./components/Test.vue').default);
 const app = new Vue({
     el: '#app',
     data:{
-        menu:0
+        menu:0,
+        ruta:''
     }
 });
