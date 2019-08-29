@@ -12,5 +12,8 @@
     <template v-if="menu==3">
         <proyecto></proyecto>
     </template>
+    <template v-if="menu==4">
+        <Usuario></Usuario>
+    </template>
     
 @endsection

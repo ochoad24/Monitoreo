@@ -146,7 +146,10 @@
                             </div>
                         </div>
                     </li>
-                    <li><a href="#!" class="displayChatbox"><i class="icon feather icon-mail"></i></a></li>
+                    <li><a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" ><i class="icon feather icon-mail"></i></a></li>
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                        {{ csrf_field() }}
+                    </form>
                     <li>
                         <div class="dropdown drp-user">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">

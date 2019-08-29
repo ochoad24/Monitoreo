@@ -18,12 +18,21 @@
                 <li data-username="dashboard Default Ecommerce CRM Analytics Crypto Project"
                     class="nav-item pcoded-hasmenu">
                     <a href="#!" class="nav-link"><span class="pcoded-micon"><i
-                                class="feather icon-home"></i></span><span class="pcoded-mtext">Dashboard</span></a>
+                                class="fas fa-user"></i></span><span class="pcoded-mtext">Usuarios</span></a>
                     <ul class="pcoded-submenu">
-                        <li class=""><a @click="menu=0" v-on:click="ruta='Roles'">Roles</a></li>
-                        <li class=""><a @click="menu=1" v-on:click="ruta='Permisos'">Permisos</a></li>
-                        <li class=""><a @click="menu=2">Categoria 1</a></li>
-                        <li class=""><a @click="menu=3">Categoria 2<span></a></li>
+                        <li><a @click="menu=0" v-on:click="ruta='Roles'">Roles</a></li>
+                        <li><a @click="menu=1" v-on:click="ruta='Permisos'">Permisos</a></li>
+                        <li><a @click="menu=4" v-on:click="ruta='Usuarios'">Usuarios<span></a></li>   
+                    </ul>
+                </li>
+                <li data-username="dashboard Default Ecommerce CRM Analytics Crypto Project"
+                    class="nav-item pcoded-hasmenu">
+                    <a href="#!" class="nav-link"><span class="pcoded-micon"><i
+                                class="fas fa-folder"></i></span><span class="pcoded-mtext">Proyectos</span></a>
+                    <ul class="pcoded-submenu">
+                        <li><a @click="menu=2" v-on:click="ruta='Organizaciones'">Organizaciones</a></li>
+                        <li><a @click="menu=3" v-on:click="ruta='Proyectos'">Proyectos<span></a></li>
+                        
                     </ul>
                 </li>
             </ul>
