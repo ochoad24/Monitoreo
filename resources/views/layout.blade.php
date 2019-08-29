@@ -62,8 +62,8 @@
                         <a href="#!" class="nav-link"><span class="pcoded-micon"><i
                                     class="feather icon-home"></i></span><span class="pcoded-mtext">Dashboard</span></a>
                         <ul class="pcoded-submenu">
-                            <li class=""><a @click="menu=0">Categoria 1</a></li>
-                            <li class=""><a @click="menu=0">Categoria 2<span
+                            <li class=""><a @click="menu=2">Organizaciones</a></li>
+                            <li class=""><a @click="menu=3">Proyectos<span
                                         class="pcoded-badge label label-danger">NEW</span></a></li>
                         </ul>
                     </li>

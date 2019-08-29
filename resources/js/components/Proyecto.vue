@@ -145,10 +145,10 @@
             Estado: 1,
             editar: 0,
             headers: [
-                { text: 'Titulo', align: 'left'},
-                { text: 'Descripcion', value: 'descripcion', align: 'right'},
-                { text: 'Fecha de inicio', value: 'fechaI', align: 'right' },
-                { text: 'Fecha de finalización', value: 'fechaF', align: 'right' }
+                { text: 'Titulo', align: 'left', value: 'Titulo'},
+                { text: 'Descripcion', value: 'Descripcion', align: 'right'},
+                { text: 'Fecha de inicio', value: 'FechaInicio', align: 'right' },
+                { text: 'Fecha de finalización', value: 'FechaFin', align: 'right' }
             ],
             menu: false,
             menu2: false,

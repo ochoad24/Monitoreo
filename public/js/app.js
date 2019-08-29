@@ -2082,18 +2082,19 @@ __webpack_require__.r(__webpack_exports__);
       editar: 0,
       headers: [{
         text: 'Titulo',
-        align: 'left'
+        align: 'left',
+        value: 'Titulo'
       }, {
         text: 'Descripcion',
-        value: 'descripcion',
+        value: 'Descripcion',
         align: 'right'
       }, {
         text: 'Fecha de inicio',
-        value: 'fechaI',
+        value: 'FechaInicio',
         align: 'right'
       }, {
         text: 'Fecha de finalización',
-        value: 'fechaF',
+        value: 'FechaFin',
         align: 'right'
       }],
       menu: false,
