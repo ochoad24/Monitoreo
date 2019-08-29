@@ -25,6 +25,7 @@ window.swal = swal;
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default));
 
 Vue.component('Rol', require('./components/Rol.vue').default);
+Vue.component('Permiso', require('./components/Permiso.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -37,6 +38,6 @@ const app = new Vue({
     el: '#app',
     data:{
         menu:0,
-        ruta:''
+        ruta:'Roles'
     }
 });

@@ -26,6 +26,7 @@
     "dependencies": {
         "material-design-icons-iconfont": "^5.0.1",
         "sweetalert2": "^8.16.3",
+        "vue-multiselect": "^2.1.6",
         "vuetify": "^1.5.18"
     }
 }

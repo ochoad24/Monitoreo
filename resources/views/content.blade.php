@@ -4,6 +4,6 @@
         <Rol></Rol>
     </template>
     <template v-if="menu==1">
-        <h1>Otro</h1>
+        <Permiso></Permiso>
     </template>
 @endsection

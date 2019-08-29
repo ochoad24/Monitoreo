@@ -21,8 +21,7 @@
                                 class="feather icon-home"></i></span><span class="pcoded-mtext">Dashboard</span></a>
                     <ul class="pcoded-submenu">
                         <li class=""><a @click="menu=0" v-on:click="ruta='Roles'">Roles</a></li>
-                        <li class=""><a @click="menu=1" v-on:click="ruta='Usuarios'">Usuarios<span
-                                    class="pcoded-badge label label-danger">NEW</span></a></li>
+                        <li class=""><a @click="menu=1" v-on:click="ruta='Permisos'">Permisos</a></li>
                     </ul>
                 </li>
             </ul>
