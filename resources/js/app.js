@@ -26,6 +26,9 @@ window.swal = swal;
 
 Vue.component('Rol', require('./components/Rol.vue').default);
 Vue.component('Permiso', require('./components/Permiso.vue').default);
+Vue.component('Test', require('./components/Test.vue').default);
+Vue.component('proyecto', require('./components/Proyecto.vue').default);
+Vue.component('organizacion', require('./components/Organizacion.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
