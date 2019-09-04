@@ -68,7 +68,7 @@
                     <v-icon small class="mr-2" @click="abrirEditar(props.item)">
                         edit
                     </v-icon>
-                    <v-icon small @click="deleteItem(props.item)">
+                    <v-icon small @click="deleteItem(props.item.IdOrganizacion)">
                         delete
                     </v-icon>
                 </td>
@@ -177,11 +177,22 @@
                 })
                 .then(function (response) {
                     console.log(response.data);
+                    swal.fire({
+                        type: 'success',
+                        title: 'Organización registrada!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
                     me.close();
                     me.initialize();
                 })
                 .catch(function (error) {
                     console.log(error.response);
+                    swal.fire({
+                        type: 'error',
+                        title: 'Se ha producido un error!',
+                        text: `Error al registrar organización: ${error.response.data.message}`
+                    });
                     me.close();
                 });
             },
@@ -198,11 +209,22 @@
                     'IdDepartamento': me.select.id
                 })
                 .then(function (response) {
+                    swal.fire({
+                        type: 'success',
+                        title: 'Organización editada!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
                     me.initialize();
                     me.close();
                 })
                 .catch(function (error) {
                     console.log(error.response);
+                    swal.fire({
+                        type: 'error',
+                        title: 'Se ha producido un error!',
+                        text: `Error al editar organización: ${error.response.data.message}`
+                    })
                     me.close();
                 })
             },
@@ -215,9 +237,42 @@
                 this.municipio = item.municipio;
             },
 
-            deleteItem(item) {
-                const index = this.desserts.indexOf(item)
-                confirm('Are you sure you want to delete this item?') && this.desserts.splice(index, 1)
+            deleteItem(id) {
+                console.log(id);
+                let me=this;
+                swal.fire({
+                    title: '¿Quieres eliminar esta organización?',
+                    text: "Esta acción no se podrá revertir",
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Eliminar',
+                    cancelButtonText: "Cancelar"
+                }).then((result) => {
+                    if (result.value) {
+                        axios.put('/org/delete', {
+                            'id': id
+                        }).then(function(response) {
+                            console.log(response.data);
+                            swal.fire({
+                                type: 'success',
+                                title: 'Organización Eliminada',
+                                showConfirmButton: false,
+                                timer: 1500
+                            });
+                            me.initialize();
+                        }).catch(function (error) {
+                            console.log('catch encontrado');
+                            console.log(error);
+                            swal.fire({
+                                type: 'error',
+                                title: `Error al eliminar organización: ${error.response.data.message}`,
+                                showConfirmButton: true
+                            });
+                        });
+                    }
+                });
             },
 
             close() {
