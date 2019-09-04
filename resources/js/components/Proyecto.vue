@@ -2,10 +2,6 @@
     <div>
         <v-toolbar flat color="white">
             <v-text-field v-model="search" append-icon="search" label="Buscar" single-line hide-details></v-text-field>
-            <v-spacer></v-spacer>
-            <v-toolbar-title>PROYECTOS</v-toolbar-title>
-            <v-divider class="mx-2" inset vertical></v-divider>
-            <v-spacer></v-spacer>
             <v-dialog v-model="dialog" persistent max-width="650px">
                 <template v-slot:activator="{ on }">
                     <v-btn color="primary" dark class="mb-2" v-on="on" @click="editar=0">Nuevo Proyecto</v-btn>
@@ -203,9 +199,9 @@
                 this.errorMsj = [];
                 if (!this.titulo)
                     this.errorMsj.push('El título del proyecto no puede estar vacio');
-                if (!this.fechaI)
+                if (!this.fechaI==null)
                     this.errorMsj.push('La fecha de inicio del proyecto no puede estar vacía');
-                if (!this.FechaFin)
+                if (!this.FechaFin==null)
                     this.errorMsj.push('La fecha de finalización del proyecto no puede estar vacía');
                 if (this.errorMsj.length)
                     this.error = 1;

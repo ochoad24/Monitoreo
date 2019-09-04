@@ -74,4 +74,10 @@ class ProyectoController extends Controller
     {
         //
     }
+    public function select()
+    {
+        //
+        $proyectos = Proyecto::select('idProyecto as id','Titulo as nombre')->get();
+        return $proyectos;
+    }
 }

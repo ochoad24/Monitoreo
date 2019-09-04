@@ -32,7 +32,14 @@
                     <ul class="pcoded-submenu">
                         <li><a @click="menu=2" v-on:click="ruta='Organizaciones'">Organizaciones</a></li>
                         <li><a @click="menu=3" v-on:click="ruta='Proyectos'">Proyectos<span></a></li>
-                        
+                    </ul>
+                </li>
+                <li data-username="dashboard Default Ecommerce CRM Analytics Crypto Project"
+                    class="nav-item pcoded-hasmenu">
+                    <a href="#!" class="nav-link"><span class="pcoded-micon"><i
+                                class="fas fa-tasks"></i></span><span class="pcoded-mtext">Actividades</span></a>
+                    <ul class="pcoded-submenu">
+                        <li><a @click="menu=5" v-on:click="ruta='Actividades'">Actividades</a></li>
                     </ul>
                 </li>
             </ul>

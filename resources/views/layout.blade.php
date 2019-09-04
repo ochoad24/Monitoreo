@@ -54,7 +54,7 @@
                     <div class="b-bg">
                         <i class="feather icon-trending-up"></i>
                     </div>
-                    <span class="b-title">Datta Able</span>
+                    <span class="b-title">ADAM</span>
                 </a>
             </div>
             <a class="mobile-menu" id="mobile-header" href="#!">
@@ -64,27 +64,9 @@
                 <ul class="navbar-nav mr-auto">
                     <li><a href="#!" class="full-screen" onclick="javascript:toggleFullScreen()"><i
                                 class="feather icon-maximize"></i></a></li>
-                    <li class="nav-item dropdown">
-                        <a class="dropdown-toggle" href="#" data-toggle="dropdown">Dropdown</a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#!">Action</a></li>
-                            <li><a class="dropdown-item" href="#!">Another action</a></li>
-                            <li><a class="dropdown-item" href="#!">Something else here</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item">
-                        <div class="main-search">
-                            <div class="input-group">
-                                <input type="text" id="m-search" class="form-control" placeholder="Search . . .">
-                                <a href="#!" class="input-group-append search-close">
-                                    <i class="feather icon-x input-group-text"></i>
-                                </a>
-                                <span class="input-group-append search-btn btn btn-primary">
-                                    <i class="feather icon-search input-group-text"></i>
-                                </span>
-                            </div>
-                        </div>
-                    </li>
+                </ul>
+                <ul class="navbar-nav mx-auto" style="width: 60%;">
+                    <multiselect v-model="proyecto" :options="proyectos" placeholder="Seleccione un Proyecto" label="nombre" track-by="nombre"></multiselect>
                 </ul>
                 <ul class="navbar-nav ml-auto">
                     <li>

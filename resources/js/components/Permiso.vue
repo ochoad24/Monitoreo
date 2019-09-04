@@ -120,7 +120,6 @@
         created() {
             this.initialize()
         },
-
         methods: {
             validate() {
                 this.error = 0;

@@ -2,10 +2,6 @@
     <div>
         <v-toolbar flat color="white">
             <v-text-field v-model="search" append-icon="search" label="Buscar" single-line hide-details></v-text-field>
-            <v-spacer></v-spacer>
-            <v-toolbar-title>Organizaciones</v-toolbar-title>
-            <v-divider class="mx-2" inset vertical></v-divider>
-            <v-spacer></v-spacer>
             <v-dialog v-model="dialog" persistent max-width="650px">
                 <template v-slot:activator="{ on }">
                     <v-btn color="primary" dark class="mb-2" v-on="on" @click="editar=0">Agregar Organización</v-btn>

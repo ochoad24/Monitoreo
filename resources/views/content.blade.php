@@ -15,5 +15,7 @@
     <template v-if="menu==4">
         <Usuario></Usuario>
     </template>
-    
+    <template v-if="menu==5">
+        <Actividad></Actividad>
+    </template>
 @endsection

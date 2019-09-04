@@ -34,6 +34,8 @@ Route::group(['middleware'=>['auth']],function(){
     Route::get('/proyecto', 'ProyectoController@index');
     Route::post('/proyecto/registrar', 'ProyectoController@store');
     Route::put('/proyecto/actualizar', 'ProyectoController@update');
+    Route::get('/proyecto/select', 'ProyectoController@select');
+    
 
     Route::get('/org', 'OrganizacionController@index');
     Route::get('/org/dept', 'OrganizacionController@depart');
@@ -46,5 +48,12 @@ Route::group(['middleware'=>['auth']],function(){
     Route::delete('/User/{usuario}/delete', 'UserController@drop');
     Route::put('/User/activar', 'UserController@activate');
     Route::put('/User/desactivar', 'UserController@desactivate');
+
+    // Rutas para los Usuarios
+    Route::get('/Actividad', 'ActividadController@index');
+    // Route::post('/User/nuevo', 'UserController@store');
+    // Route::delete('/User/{usuario}/delete', 'UserController@drop');
+    // Route::put('/User/activar', 'UserController@activate');
+    // Route::put('/User/desactivar', 'UserController@desactivate');
 
 });
