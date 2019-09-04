@@ -36,11 +36,15 @@ Route::group(['middleware'=>['auth']],function(){
     Route::put('/proyecto/actualizar', 'ProyectoController@update');
     Route::get('/proyecto/select', 'ProyectoController@select');
     
+    Route::put('/proyecto/activate', 'ProyectoController@activate');
+    Route::put('/proyecto/deactivate', 'ProyectoController@deactivate');
+    Route::get('/proyecto/orgs', 'ProyectoController@orgs');
 
     Route::get('/org', 'OrganizacionController@index');
     Route::get('/org/dept', 'OrganizacionController@depart');
     Route::post('/org/registrar', 'OrganizacionController@store');
     Route::put('/org/actualizar', 'OrganizacionController@update');
+    Route::put('/org/delete', 'OrganizacionController@destroy');
 
     // Rutas para los Usuarios
     Route::get('/User', 'UserController@index');
