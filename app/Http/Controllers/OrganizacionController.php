@@ -70,12 +70,13 @@ class OrganizacionController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
         //
+        $organizacion = Organizacion::findOrFail($request->id);
         try {
-            $res = Organizacion::where('IdOrganizacion', $id)->delete();
-            return ['success' => $res];
+            $organizacion->delete();
+            return response()->json(array('success' => true, 'id' => $org->IdOrganizacion), 200);
         } catch (\Throwable $th) {
             return ['error' => $th->getMessage()];
         }
