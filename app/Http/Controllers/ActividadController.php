@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Actividad;
+use Carbon\Carbon;
 class ActividadController extends Controller
 {
     public function index(Request $request){
@@ -12,14 +13,17 @@ class ActividadController extends Controller
     }
     public function edit(Request $request){
         $id=$request->id;
-        $nombre=$request->nombre;
-        $idRol=$request->idRol;
         try{
-            $permisos=Permiso::findOrFail($id);
-            $permisos->nombre=$nombre;
-            $permisos->idRol=$idRol;
-            $permisos->save();
-            return 'Se ha modificado el permiso correctamente';
+            $actividad = Actividad::findOrFail($id);
+            $actividad->actividad = $request->actividad;
+            $actividad->idProyecto = $request->idProyecto;
+            $actividad->fechaInicio = Carbon::parse($request->fechaInicio);
+            $actividad->fechaFinal = Carbon::parse($request->fechaFinal);
+            $actividad->tareas = 15;
+            $actividad->tareasCompletadas = 5;
+            $actividad->tareasPendientes = 10;
+            $actividad->Estado = 1;
+            $actividad->save();
         }catch(\Exception $e){
             $response['error'] = $e->getMessage();
             return response()->json($response, 500);
@@ -29,24 +33,65 @@ class ActividadController extends Controller
         try{
             $permiso->delete();
             return 'Se ha eliminado el permiso correctamente';
-        }catch(\Exception $e){
-            $response['error'] = $e->getMessage();
-            return response()->json($response, 500);
+        }catch(\Throwable $th) {
+            return ['error' => $th->getMessage()];
         }
        
     }
     public function store(Request $request){
-        $nombre=$request->nombre;
-        $idRol=$request->idRol;
+        //Registrar una nueva actividad
         try{
-            $permiso=new Permiso;
-            $permiso->nombre=$nombre;
-            $permiso->idRol=$idRol;
-            $permiso->save();
-            return 'Se ha agregado el permiso correctamente';
+            $actividad = new Actividad();
+            $actividad->actividad = $request->actividad;
+            $actividad->idProyecto = $request->idProyecto;
+            $actividad->fechaInicio = Carbon::parse($request->fechaInicio);
+            $actividad->fechaFinal = Carbon::parse($request->fechaFin);
+            $actividad->tareas = 15;
+            $actividad->tareasCompletadas = 5;
+            $actividad->tareasPendientes = 10;
+            $actividad->estado = 1;
+            $actividad->save();
+        }catch(\Throwable $th) {
+            return ['error' => $th->getMessage()];
+        }
+    }
+
+    public function activate(Request $request) {
+        //
+        $id=$request->id;
+        try{
+            $actividad=Actividad::findOrFail($id);
+            $actividad->estado=1;
+            $actividad->save();
+            return 'Se ha activado correctamente';
         }catch(\Exception $e){
             $response['error'] = $e->getMessage();
             return response()->json($response, 500);
+        }
+    }
+
+    public function deactivate(Request $request) {
+        $id=$request->id;
+        try{
+            $actividad=Actividad::findOrFail($id);
+            $actividad->estado=0;
+            $actividad->save();
+            return 'Se ha desactivado correctamente';
+        }catch(\Exception $e){
+            $response['error'] = $e->getMessage();
+            return response()->json($response, 500);
+        }
+    }
+
+    public function destroy(Request $request)
+    {
+        //
+        $actividad = Actividad::findOrFail($request->id);
+        try {
+            $actividad->delete();
+            return response()->json(array('success' => true, 'id' => $org->IdOrganizacion), 200);
+        } catch (\Throwable $th) {
+            return ['error' => $th->getMessage()];
         }
     }
 }

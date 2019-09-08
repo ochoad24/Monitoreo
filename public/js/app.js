@@ -1796,6 +1796,62 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
@@ -1804,22 +1860,29 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       dialog: false,
+      menu: false,
+      menu2: false,
+      idActividad: 0,
+      editar: 0,
+      actividad: '',
+      fechaInicio: new Date().toISOString().substr(0, 10),
+      fechaFinal: new Date().toISOString().substr(0, 10),
       search: '',
       headers: [{
         text: 'Actividad',
         value: 'actividad',
-        align: 'left'
+        align: 'right'
       }, {
         text: 'Tareas',
         value: 'tareas',
         align: 'right'
       }, {
         text: 'Tareas Completadas',
-        value: 'tareasCompletas',
+        value: 'tareasCompletadas',
         align: 'right'
       }, {
         text: 'Tareas Pendientes',
-        value: 'tareasPendienteas',
+        value: 'tareasPendientes',
         align: 'right'
       }, {
         text: 'Fecha de Inicio',
@@ -1827,12 +1890,12 @@ __webpack_require__.r(__webpack_exports__);
         align: 'right'
       }, {
         text: 'Fecha de Finalización',
-        value: 'fechaFin',
+        value: 'fechaFinal',
         align: 'right'
       }, {
         text: 'Estado',
         value: 'estado',
-        align: 'right'
+        align: 'center'
       }],
       error: 0,
       errorMsj: [],
@@ -1863,7 +1926,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   computed: {
     formTitle: function formTitle() {
-      return this.editedIndex === -1 ? 'Nuevo Usuario' : 'Editar Usuario';
+      return this.editedIndex === -1 ? 'Nueva Actividad' : 'Editar Actividad';
     }
   },
   watch: {
@@ -1875,8 +1938,6 @@ __webpack_require__.r(__webpack_exports__);
     this.initialize();
   },
   mounted: function mounted() {
-    var _this = this;
-
     var me = this;
     this.$root.$on('SeleccionProyecto', function (data) {
       if (data) {
@@ -1893,145 +1954,230 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       console.log(data);
-      console.log("Proyecto: " + _this.proyecto);
     });
   },
   methods: {
     validate: function validate() {
       this.error = 0;
-      this.errorMsj = []; // if (!this.editedItem.nombre)
-      //     this.errorMsj.push('El nombre no puede estar vacio');
-
-      if (this.errorMsj.length) this.error = 1;
+      this.errorMsj = [];
+      if (!this.proyecto) this.errorMsj.push('No ha seleccionado ningún proyecto. Por favor seleccione uno.');
+      if (!this.actividad) this.errorMsj.push('El nombre de la actividad no puede estar vacío');
+      if (!this.fechaInicio) this.errorMsj.push('La fecha de inicio de la actividad no puede estar vacía');
+      if (!this.fechaFinal) this.errorMsj.push('La fecha de finalización de la actividad no puede estar vacía');
+      if (this.errorMsj.length) this.error = 1;else this.error = 0;
       return this.error;
     },
     initialize: function initialize() {
-      var _this2 = this;
+      var _this = this;
 
       var url = '/Actividad?proyecto=' + this.proyecto;
       axios.get(url).then(function (response) {
-        _this2.actividades = response.data;
+        console.log(response.data);
+        _this.actividades = response.data;
       })["catch"](function (errors) {
         console.log(errors);
       });
     },
-    activar: function activar(item) {
+    registrarActividad: function registrarActividad() {
+      var me = this;
+
+      if (this.validate() === 1) {
+        return;
+      }
+
+      axios.post('actividad/registrar', {
+        'actividad': me.actividad,
+        'fechaInicio': me.fechaInicio,
+        'fechaFinal': me.fechaFinal,
+        'idProyecto': me.proyecto
+      }).then(function (response) {
+        console.log(response.data);
+
+        if (!response.data) {
+          swal.fire({
+            type: 'success',
+            title: 'Actividad Registrada!',
+            showConfirmButton: false,
+            timer: 1500
+          });
+        } else {
+          swal.fire({
+            type: 'error',
+            title: 'Se ha producido un error!',
+            text: "Error al registrar actividad!"
+          });
+          me.close();
+        }
+
+        me.close();
+        me.initialize();
+      })["catch"](function (error) {
+        console.log(error.response);
+        swal.fire({
+          type: 'error',
+          title: 'Se ha producido un error!',
+          text: "Error al ingresar proyecto: ".concat(error.response.data.message)
+        });
+        me.close();
+      });
+    },
+    editarActividad: function editarActividad() {
+      var me = this;
+
+      if (this.validate() === 1) {
+        return;
+      }
+
+      axios.post('actividad/actualizar', {
+        'actividad': me.actividad,
+        'fechaInicio': me.fechaInicio,
+        'fechaFinal': me.fechaFinal,
+        'idProyecto': me.proyecto,
+        'id': me.idActividad
+      }).then(function (response) {
+        console.log(response.data);
+
+        if (!response.data) {
+          swal.fire({
+            type: 'success',
+            title: 'Actividad editada!',
+            showConfirmButton: false,
+            timer: 1500
+          });
+        } else {
+          swal.fire({
+            type: 'error',
+            title: 'Se ha producido un error!',
+            text: "Error al editar actividad!"
+          });
+          me.close();
+        }
+
+        me.close();
+        me.initialize();
+      })["catch"](function (error) {
+        console.log(error.response);
+        swal.fire({
+          type: 'error',
+          title: 'Se ha producido un error!',
+          text: "Error al ingresar proyecto: ".concat(error.response.data.message)
+        });
+        me.close();
+      });
+    },
+    activar: function activar(id) {
+      var me = this;
+      var swalWithBootstrapButtons = swal.mixin({
+        customClass: {
+          confirmButton: 'btn btn-success',
+          cancelButton: 'btn btn-danger'
+        },
+        buttonsStyling: false
+      });
+      swalWithBootstrapButtons.fire({
+        title: '¿Quieres activar esta actividad?',
+        type: 'warning',
+        showCancelButton: true,
+        confirmButton: 'Aceptar',
+        cancelButtonText: 'Cancelar',
+        reverseButtons: true
+      }).then(function (result) {
+        if (result.value) {
+          axios.put('actividad/activate', {
+            'id': id
+          }).then(function (response) {
+            me.initialize();
+            swalWithBootstrapButtons.fire('Activado', 'La actividad ha sido activada!', 'success');
+          })["catch"](function (error) {
+            swalWithBootstrapButtons.fire('Error', 'Error al activar actividad!', 'error');
+          });
+        } else {
+          swalWithBootstrapButtons.fire('Cancelado :(');
+        }
+      });
+    },
+    desactivar: function desactivar(id) {
+      var me = this;
+      var swalWithBootstrapButtons = swal.mixin({
+        customClass: {
+          confirmButton: 'btn btn-success',
+          cancelButton: 'btn btn-danger'
+        },
+        buttonsStyling: false
+      });
+      swalWithBootstrapButtons.fire({
+        title: '¿Quieres desactivar esta actividad?',
+        type: 'warning',
+        showCancelButton: true,
+        confirmButton: 'Aceptar',
+        cancelButtonText: 'Cancelar',
+        reverseButtons: true
+      }).then(function (result) {
+        if (result.value) {
+          axios.put('actividad/deactivate', {
+            'id': id
+          }).then(function (response) {
+            me.initialize();
+            swalWithBootstrapButtons.fire('Desactivado', 'La actividad ha sido desactivada!', 'success');
+          })["catch"](function (error) {
+            console.log(error.response);
+            swalWithBootstrapButtons.fire('Error', 'Error al desactivar actividad!', 'error');
+          });
+        } else {
+          swalWithBootstrapButtons.fire('Cancelado :(');
+        }
+      });
+    },
+    deleteItem: function deleteItem(id) {
       var me = this;
       swal.fire({
-        title: 'Quieres activar a este Usuario?',
+        title: '¿Quieres eliminar esta actividad?',
+        text: "Esta acción no se podrá revertir",
         type: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
-        confirmButtonText: 'Si, Activalo!',
+        confirmButtonText: 'Eliminar',
         cancelButtonText: "Cancelar"
       }).then(function (result) {
         if (result.value) {
-          axios({
-            method: 'put',
-            url: '/User/activar',
-            data: {
-              id: item.id
-            }
+          axios.put('/actividad/delete', {
+            'id': id
           }).then(function (response) {
-            me.initialize();
+            console.log(response.data);
             swal.fire({
-              position: 'top-end',
               type: 'success',
-              title: response.data,
+              title: 'Actividad eliminada',
               showConfirmButton: false,
               timer: 1500
             });
+            me.initialize();
           })["catch"](function (error) {
+            console.log('catch encontrado');
+            console.log(error);
             swal.fire({
-              position: 'top-end',
               type: 'error',
-              title: error.response.data.error,
+              title: "Error al eliminar actividad: ".concat(error.response.data.message),
               showConfirmButton: true
             });
           });
         }
       });
     },
-    desactivar: function desactivar(item) {
-      var me = this;
-      swal.fire({
-        title: 'Quieres desactivar a este Usuario?',
-        type: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Si, Activalo!',
-        cancelButtonText: "Cancelar"
-      }).then(function (result) {
-        if (result.value) {
-          axios({
-            method: 'put',
-            url: '/User/desactivar',
-            data: {
-              id: item.id
-            }
-          }).then(function (response) {
-            me.initialize();
-            swal.fire({
-              position: 'top-end',
-              type: 'success',
-              title: response.data,
-              showConfirmButton: false,
-              timer: 1500
-            });
-          })["catch"](function (error) {
-            swal.fire({
-              position: 'top-end',
-              type: 'error',
-              title: error.response.data.error,
-              showConfirmButton: true
-            });
-          });
-        }
-      });
-    },
-    deleteItem: function deleteItem(item) {
-      var me = this;
-      swal.fire({
-        title: 'Quieres eliminar este Usuario?',
-        text: "No podras revertir la eliminacion!",
-        type: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Si, Eliminalo!',
-        cancelButtonText: "Cancelar"
-      }).then(function (result) {
-        if (result.value) {
-          axios["delete"]("/User/".concat(item.id, "/delete")).then(function (response) {
-            me.initialize();
-            swal.fire({
-              position: 'top-end',
-              type: 'success',
-              title: response.data,
-              showConfirmButton: false,
-              timer: 1500
-            });
-          })["catch"](function (error) {
-            swal.fire({
-              position: 'top-end',
-              type: 'error',
-              title: error.response.data.error,
-              showConfirmButton: true
-            });
-          });
-        }
-      });
+    abrirEditar: function abrirEditar(item) {
+      this.editar = 1;
+      this.dialog = true;
+      this.actividad = item.actividad;
+      this.fechaInicio = item.fechaInicio;
+      this.fechaFinal = item.fechaFinal;
+      this.idActividad = item.id;
     },
     close: function close() {
-      var _this3 = this;
-
+      this.editar = 0;
       this.dialog = false;
-      setTimeout(function () {
-        _this3.editedItem = Object.assign({}, _this3.defaultItem);
-        _this3.editedIndex = -1;
-      }, 300);
+      this.fechaInicio = '';
+      this.fechaFinal = '';
+      this.actividad = '';
     },
     save: function save() {
       var me = this;
@@ -42979,7 +43125,11 @@ var render = function() {
           _c(
             "v-dialog",
             {
-              attrs: { "max-width": "600px" },
+              attrs: {
+                persistent: "",
+                "max-width": "60%",
+                "max-height": "800"
+              },
               scopedSlots: _vm._u([
                 {
                   key: "activator",
@@ -42991,11 +43141,16 @@ var render = function() {
                         _vm._g(
                           {
                             staticClass: "mb-2",
-                            attrs: { color: "primary", dark: "" }
+                            attrs: { color: "green darken-1", dark: "" },
+                            on: {
+                              click: function($event) {
+                                _vm.editar = 0
+                              }
+                            }
                           },
                           on
                         ),
-                        [_vm._v("Nuevo Usuario")]
+                        [_vm._v("Nueva Actividad")]
                       )
                     ]
                   }
@@ -43014,11 +43169,32 @@ var render = function() {
               _c(
                 "v-card",
                 [
-                  _c("v-card-title", [
-                    _c("span", { staticClass: "headline" }, [
-                      _vm._v(_vm._s(_vm.formTitle))
-                    ])
-                  ]),
+                  _c(
+                    "v-toolbar",
+                    { attrs: { dark: "", color: "green darken-1" } },
+                    [
+                      _c(
+                        "v-btn",
+                        {
+                          attrs: { icon: "", dark: "" },
+                          on: {
+                            click: function($event) {
+                              _vm.dialog = false
+                            }
+                          }
+                        },
+                        [
+                          _c("v-icon", { attrs: { col: "white" } }, [
+                            _vm._v("clear")
+                          ])
+                        ],
+                        1
+                      ),
+                      _vm._v(" "),
+                      _c("v-toolbar-title", [_vm._v(_vm._s(_vm.formTitle))])
+                    ],
+                    1
+                  ),
                   _vm._v(" "),
                   _c(
                     "v-card-text",
@@ -43033,81 +43209,18 @@ var render = function() {
                             [
                               _c(
                                 "v-flex",
-                                { attrs: { xs12: "", sm6: "", md6: "" } },
-                                [
-                                  _c("v-text-field", {
-                                    attrs: { label: "Nombre" },
-                                    model: {
-                                      value: _vm.editedItem.nombre,
-                                      callback: function($$v) {
-                                        _vm.$set(_vm.editedItem, "nombre", $$v)
-                                      },
-                                      expression: "editedItem.nombre"
-                                    }
-                                  })
-                                ],
-                                1
-                              ),
-                              _vm._v(" "),
-                              _c(
-                                "v-flex",
-                                { attrs: { xs12: "", sm6: "", md6: "" } },
-                                [
-                                  _c("v-text-field", {
-                                    attrs: { label: "Apellido" },
-                                    model: {
-                                      value: _vm.editedItem.apellido,
-                                      callback: function($$v) {
-                                        _vm.$set(
-                                          _vm.editedItem,
-                                          "apellido",
-                                          $$v
-                                        )
-                                      },
-                                      expression: "editedItem.apellido"
-                                    }
-                                  })
-                                ],
-                                1
-                              ),
-                              _vm._v(" "),
-                              _c(
-                                "v-flex",
-                                { attrs: { xs12: "", sm6: "", md6: "" } },
-                                [
-                                  _c("v-text-field", {
-                                    attrs: { label: "Usuario" },
-                                    model: {
-                                      value: _vm.editedItem.usuario,
-                                      callback: function($$v) {
-                                        _vm.$set(_vm.editedItem, "usuario", $$v)
-                                      },
-                                      expression: "editedItem.usuario"
-                                    }
-                                  })
-                                ],
-                                1
-                              ),
-                              _vm._v(" "),
-                              _c(
-                                "v-flex",
-                                { attrs: { xs12: "", sm6: "", md6: "" } },
+                                { attrs: { xs12: "" } },
                                 [
                                   _c("v-text-field", {
                                     attrs: {
-                                      label: "Contraseña",
-                                      type: "password"
+                                      label: "Ingrese nombre de la actividad"
                                     },
                                     model: {
-                                      value: _vm.editedItem.contrasena,
+                                      value: _vm.actividad,
                                       callback: function($$v) {
-                                        _vm.$set(
-                                          _vm.editedItem,
-                                          "contrasena",
-                                          $$v
-                                        )
+                                        _vm.actividad = $$v
                                       },
-                                      expression: "editedItem.contrasena"
+                                      expression: "actividad"
                                     }
                                   })
                                 ],
@@ -43116,21 +43229,260 @@ var render = function() {
                               _vm._v(" "),
                               _c(
                                 "v-flex",
-                                { attrs: { xs12: "", sm6: "", md6: "" } },
+                                { attrs: { xs12: "", sm12: "", md6: "" } },
                                 [
-                                  _c("v-text-field", {
-                                    attrs: {
-                                      label: "Repetir contraseña",
-                                      type: "password"
-                                    },
-                                    model: {
-                                      value: _vm.editedItem.repetir,
-                                      callback: function($$v) {
-                                        _vm.$set(_vm.editedItem, "repetir", $$v)
+                                  _c(
+                                    "v-menu",
+                                    {
+                                      ref: "menu",
+                                      attrs: {
+                                        "close-on-content-click": false,
+                                        "nudge-right": 40,
+                                        "return-value": _vm.fechaInicio,
+                                        lazy: "",
+                                        transition: "scale-transition",
+                                        "offset-y": "",
+                                        "full-width": "",
+                                        "min-width": "290px"
                                       },
-                                      expression: "editedItem.repetir"
-                                    }
-                                  })
+                                      on: {
+                                        "update:returnValue": function($event) {
+                                          _vm.fechaInicio = $event
+                                        },
+                                        "update:return-value": function(
+                                          $event
+                                        ) {
+                                          _vm.fechaInicio = $event
+                                        }
+                                      },
+                                      scopedSlots: _vm._u([
+                                        {
+                                          key: "activator",
+                                          fn: function(ref) {
+                                            var on = ref.on
+                                            return [
+                                              _c(
+                                                "v-text-field",
+                                                _vm._g(
+                                                  {
+                                                    attrs: {
+                                                      label:
+                                                        "Ingrese fecha de inicio",
+                                                      "prepend-icon": "event",
+                                                      readonly: ""
+                                                    },
+                                                    model: {
+                                                      value: _vm.fechaInicio,
+                                                      callback: function($$v) {
+                                                        _vm.fechaInicio = $$v
+                                                      },
+                                                      expression: "fechaInicio"
+                                                    }
+                                                  },
+                                                  on
+                                                )
+                                              )
+                                            ]
+                                          }
+                                        }
+                                      ]),
+                                      model: {
+                                        value: _vm.menu,
+                                        callback: function($$v) {
+                                          _vm.menu = $$v
+                                        },
+                                        expression: "menu"
+                                      }
+                                    },
+                                    [
+                                      _vm._v(" "),
+                                      _c(
+                                        "v-date-picker",
+                                        {
+                                          attrs: {
+                                            "no-title": "",
+                                            scrollable: ""
+                                          },
+                                          model: {
+                                            value: _vm.fechaInicio,
+                                            callback: function($$v) {
+                                              _vm.fechaInicio = $$v
+                                            },
+                                            expression: "fechaInicio"
+                                          }
+                                        },
+                                        [
+                                          _c("v-spacer"),
+                                          _vm._v(" "),
+                                          _c(
+                                            "v-btn",
+                                            {
+                                              attrs: {
+                                                flat: "",
+                                                color: "primary"
+                                              },
+                                              on: {
+                                                click: function($event) {
+                                                  _vm.menu = false
+                                                }
+                                              }
+                                            },
+                                            [_vm._v("Cancelar")]
+                                          ),
+                                          _vm._v(" "),
+                                          _c(
+                                            "v-btn",
+                                            {
+                                              attrs: {
+                                                flat: "",
+                                                color: "primary"
+                                              },
+                                              on: {
+                                                click: function($event) {
+                                                  return _vm.$refs.menu.save(
+                                                    _vm.fechaInicio
+                                                  )
+                                                }
+                                              }
+                                            },
+                                            [_vm._v("Guardar")]
+                                          )
+                                        ],
+                                        1
+                                      )
+                                    ],
+                                    1
+                                  )
+                                ],
+                                1
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "v-flex",
+                                { attrs: { xs12: "", sm12: "", md6: "" } },
+                                [
+                                  _c(
+                                    "v-menu",
+                                    {
+                                      ref: "menu2",
+                                      attrs: {
+                                        "close-on-content-click": false,
+                                        "nudge-right": 40,
+                                        "return-value": _vm.fechaFinal,
+                                        lazy: "",
+                                        transition: "scale-transition",
+                                        "offset-y": "",
+                                        "full-width": "",
+                                        "min-width": "290px"
+                                      },
+                                      on: {
+                                        "update:returnValue": function($event) {
+                                          _vm.fechaFinal = $event
+                                        },
+                                        "update:return-value": function(
+                                          $event
+                                        ) {
+                                          _vm.fechaFinal = $event
+                                        }
+                                      },
+                                      scopedSlots: _vm._u([
+                                        {
+                                          key: "activator",
+                                          fn: function(ref) {
+                                            var on = ref.on
+                                            return [
+                                              _c(
+                                                "v-text-field",
+                                                _vm._g(
+                                                  {
+                                                    attrs: {
+                                                      label:
+                                                        "Ingrese fecha de finalización",
+                                                      "prepend-icon": "event",
+                                                      readonly: ""
+                                                    },
+                                                    model: {
+                                                      value: _vm.fechaFinal,
+                                                      callback: function($$v) {
+                                                        _vm.fechaFinal = $$v
+                                                      },
+                                                      expression: "fechaFinal"
+                                                    }
+                                                  },
+                                                  on
+                                                )
+                                              )
+                                            ]
+                                          }
+                                        }
+                                      ]),
+                                      model: {
+                                        value: _vm.menu2,
+                                        callback: function($$v) {
+                                          _vm.menu2 = $$v
+                                        },
+                                        expression: "menu2"
+                                      }
+                                    },
+                                    [
+                                      _vm._v(" "),
+                                      _c(
+                                        "v-date-picker",
+                                        {
+                                          attrs: {
+                                            "no-title": "",
+                                            scrollable: ""
+                                          },
+                                          model: {
+                                            value: _vm.fechaFinal,
+                                            callback: function($$v) {
+                                              _vm.fechaFinal = $$v
+                                            },
+                                            expression: "fechaFinal"
+                                          }
+                                        },
+                                        [
+                                          _c("v-spacer"),
+                                          _vm._v(" "),
+                                          _c(
+                                            "v-btn",
+                                            {
+                                              attrs: {
+                                                flat: "",
+                                                color: "primary"
+                                              },
+                                              on: {
+                                                click: function($event) {
+                                                  _vm.menu2 = false
+                                                }
+                                              }
+                                            },
+                                            [_vm._v("Cancelar")]
+                                          ),
+                                          _vm._v(" "),
+                                          _c(
+                                            "v-btn",
+                                            {
+                                              attrs: {
+                                                flat: "",
+                                                color: "primary"
+                                              },
+                                              on: {
+                                                click: function($event) {
+                                                  return _vm.$refs.menu2.save(
+                                                    _vm.fechaFinal
+                                                  )
+                                                }
+                                              }
+                                            },
+                                            [_vm._v("Guardar")]
+                                          )
+                                        ],
+                                        1
+                                      )
+                                    ],
+                                    1
+                                  )
                                 ],
                                 1
                               )
@@ -43148,22 +43500,20 @@ var render = function() {
                     ? [
                         _c("v-divider"),
                         _vm._v(" "),
-                        _c(
-                          "div",
-                          { staticClass: "text-xs-center" },
-                          [
-                            _vm._l(_vm.errorMsj, function(e) {
-                              return _c("strong", {
-                                key: e,
+                        _vm._l(_vm.errorMsj, function(e) {
+                          return _c(
+                            "div",
+                            { key: e, staticClass: "text-xs-center" },
+                            [
+                              _c("strong", {
                                 staticClass: "red--text text--lighten-1",
                                 domProps: { textContent: _vm._s(e) }
-                              })
-                            }),
-                            _vm._v(" "),
-                            _c("br")
-                          ],
-                          2
-                        ),
+                              }),
+                              _vm._v(" "),
+                              _c("br")
+                            ]
+                          )
+                        }),
                         _vm._v(" "),
                         _c("v-divider")
                       ]
@@ -43183,14 +43533,31 @@ var render = function() {
                         [_vm._v("Cancelar")]
                       ),
                       _vm._v(" "),
-                      _c(
-                        "v-btn",
-                        {
-                          attrs: { color: "blue darken-1", flat: "" },
-                          on: { click: _vm.save }
-                        },
-                        [_vm._v("Guardar")]
-                      )
+                      _vm.editar === 0
+                        ? _c(
+                            "v-btn",
+                            {
+                              attrs: { color: "blue darken-1", flat: "" },
+                              on: { click: _vm.registrarActividad }
+                            },
+                            [_vm._v("Guardar")]
+                          )
+                        : _vm._e(),
+                      _vm._v(" "),
+                      _vm.editar === 1
+                        ? _c(
+                            "v-btn",
+                            {
+                              attrs: { color: "blue darken-1", flat: "" },
+                              on: {
+                                click: function($event) {
+                                  return _vm.editarActividad()
+                                }
+                              }
+                            },
+                            [_vm._v("Guardar")]
+                          )
+                        : _vm._e()
                     ],
                     1
                   )
@@ -43216,38 +43583,37 @@ var render = function() {
             key: "items",
             fn: function(props) {
               return [
-                _c("td", { staticClass: "text-xs-left" }, [
-                  _vm._v(_vm._s(props.item.actidad))
+                _c("td", { staticClass: "text-xs-right" }, [
+                  _vm._v(_vm._s(props.item.actividad))
                 ]),
                 _vm._v(" "),
-                _c("td", { staticClass: "text-xs-left" }, [
+                _c("td", { staticClass: "text-xs-right" }, [
                   _vm._v(_vm._s(props.item.tareas))
                 ]),
                 _vm._v(" "),
-                _c("td", { staticClass: "text-xs-left" }, [
+                _c("td", { staticClass: "text-xs-right" }, [
                   _vm._v(_vm._s(props.item.tareasCompletadas))
                 ]),
                 _vm._v(" "),
-                _c("td", { staticClass: "text-xs-left" }, [
+                _c("td", { staticClass: "text-xs-right" }, [
                   _vm._v(_vm._s(props.item.tareasPendientes))
                 ]),
                 _vm._v(" "),
-                _c("td", { staticClass: "text-xs-left" }, [
+                _c("td", { staticClass: "text-xs-right" }, [
                   _vm._v(_vm._s(props.item.fechaInicio))
                 ]),
                 _vm._v(" "),
-                _c("td", { staticClass: "text-xs-left" }, [
-                  _vm._v(_vm._s(props.item.fechaPendiente))
+                _c("td", { staticClass: "text-xs-right" }, [
+                  _vm._v(_vm._s(props.item.fechaFinal))
                 ]),
                 _vm._v(" "),
                 _c(
                   "td",
-                  { staticClass: "text-xs-left" },
+                  { staticClass: "text-xs-center" },
                   [
                     [
                       _c(
                         "div",
-                        { staticClass: "text-xs-left" },
                         [
                           props.item.estado
                             ? _c(
@@ -43279,6 +43645,20 @@ var render = function() {
                   "td",
                   { staticClass: "justify-left layout px-0" },
                   [
+                    _c(
+                      "v-icon",
+                      {
+                        staticClass: "mr-2",
+                        attrs: { small: "" },
+                        on: {
+                          click: function($event) {
+                            return _vm.abrirEditar(props.item)
+                          }
+                        }
+                      },
+                      [_vm._v("\n                    edit\n                ")]
+                    ),
+                    _vm._v(" "),
                     props.item.estado
                       ? _c(
                           "v-icon",
@@ -43287,7 +43667,7 @@ var render = function() {
                             attrs: { small: "" },
                             on: {
                               click: function($event) {
-                                return _vm.desactivar(props.item)
+                                return _vm.desactivar(props.item.id)
                               }
                             }
                           },
@@ -43304,7 +43684,7 @@ var render = function() {
                             attrs: { small: "" },
                             on: {
                               click: function($event) {
-                                return _vm.activar(props.item)
+                                return _vm.activar(props.item.id)
                               }
                             }
                           },
@@ -43321,7 +43701,7 @@ var render = function() {
                         attrs: { small: "" },
                         on: {
                           click: function($event) {
-                            return _vm.deleteItem(props.item)
+                            return _vm.deleteItem(props.item.id)
                           }
                         }
                       },
@@ -45009,22 +45389,20 @@ var render = function() {
                 ? [
                     _c("v-divider"),
                     _vm._v(" "),
-                    _c(
-                      "div",
-                      { staticClass: "text-xs-center" },
-                      [
-                        _vm._l(_vm.errorMsj1, function(e) {
-                          return _c("strong", {
-                            key: e,
+                    _vm._l(_vm.errorMsj1, function(e) {
+                      return _c(
+                        "div",
+                        { key: e, staticClass: "text-xs-center" },
+                        [
+                          _c("strong", {
                             staticClass: "red--text text--lighten-1",
                             domProps: { textContent: _vm._s(e) }
-                          })
-                        }),
-                        _vm._v(" "),
-                        _c("br")
-                      ],
-                      2
-                    ),
+                          }),
+                          _vm._v(" "),
+                          _c("br")
+                        ]
+                      )
+                    }),
                     _vm._v(" "),
                     _c("v-divider")
                   ]

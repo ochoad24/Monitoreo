@@ -207,8 +207,8 @@
 
                 <template v-if="error1">
                     <v-divider></v-divider>
-                    <div class="text-xs-center">
-                        <strong class="red--text text--lighten-1" v-for="e in errorMsj1" :key="e" v-text="e"></strong>
+                    <div class="text-xs-center"  v-for="e in errorMsj1" :key="e">
+                        <strong class="red--text text--lighten-1" v-text="e"></strong>
                         <br>
                     </div>
                     <v-divider></v-divider>

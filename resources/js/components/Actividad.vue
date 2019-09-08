@@ -3,83 +3,139 @@
         <v-toolbar flat color="white">
             <v-text-field v-model="search" append-icon="search" label="Buscar" single-line hide-details></v-text-field>
             <v-spacer></v-spacer>
-            <v-dialog v-model="dialog" max-width="600px">
+            <!--    
+                DIALOGO PARA LA CREACION DE PROYECTO    
+            -->
+            <v-dialog v-model="dialog" persistent max-width="60%" max-height="800">
                 <template v-slot:activator="{ on }">
-                    <v-btn color="primary" dark class="mb-2" v-on="on">Nuevo Usuario</v-btn>
+                    <v-btn color="green darken-1" dark class="mb-2" v-on="on" @click="editar=0">Nueva Actividad</v-btn>
                 </template>
                 <v-card>
-                    <v-card-title>
-                        <span class="headline">{{ formTitle }}</span>
-                    </v-card-title>
-
+                    <v-toolbar dark color="green darken-1">
+                        <v-btn icon dark @click="dialog = false">
+                            <v-icon col="white">clear</v-icon>
+                        </v-btn>
+                        <v-toolbar-title>{{ formTitle }}</v-toolbar-title>
+                    </v-toolbar>
                     <v-card-text>
                         <v-container grid-list-md>
                             <v-layout wrap>
-                                <v-flex xs12 sm6 md6>
-                                    <v-text-field v-model="editedItem.nombre" label="Nombre"></v-text-field>
+                                <v-flex xs12>
+                                    <v-text-field v-model="actividad" label="Ingrese nombre de la actividad"></v-text-field>
                                 </v-flex>
-                                <v-flex xs12 sm6 md6>
-                                    <v-text-field v-model="editedItem.apellido" label="Apellido"></v-text-field>
+                                <v-flex xs12 sm12 md6>
+                                    <!-- DateTime Picker de Fecha Inicial --> 
+                                    <v-menu
+                                        ref="menu"
+                                        v-model="menu"
+                                        :close-on-content-click="false"
+                                        :nudge-right="40"
+                                        :return-value.sync="fechaInicio"
+                                        lazy
+                                        transition="scale-transition"
+                                        offset-y
+                                        full-width
+                                        min-width="290px"
+                                    >
+                                        <template v-slot:activator="{ on }">
+                                            <v-text-field 
+                                                v-model="fechaInicio" 
+                                                label="Ingrese fecha de inicio"
+                                                prepend-icon="event"
+                                                readonly
+                                                v-on="on"
+                                            ></v-text-field>
+                                        </template>
+                                        <v-date-picker v-model="fechaInicio" no-title scrollable>
+                                            <v-spacer></v-spacer>
+                                            <v-btn flat color="primary" @click="menu = false">Cancelar</v-btn>
+                                            <v-btn flat color="primary" @click="$refs.menu.save(fechaInicio)">Guardar</v-btn>
+                                        </v-date-picker>
+                                    </v-menu>
+                                    <!-- Fin del date Time Picker -->
                                 </v-flex>
-                                <v-flex xs12 sm6 md6>
-                                    <v-text-field v-model="editedItem.usuario" label="Usuario"></v-text-field>
+                                <v-flex xs12 sm12 md6>
+                                    <!-- DateTime Picker de Fecha Inicial --> 
+                                    <v-menu
+                                        ref="menu2"
+                                        v-model="menu2"
+                                        :close-on-content-click="false"
+                                        :nudge-right="40"
+                                        :return-value.sync="fechaFinal"
+                                        lazy
+                                        transition="scale-transition"
+                                        offset-y
+                                        full-width
+                                        min-width="290px"
+                                    >
+                                        <template v-slot:activator="{ on }">
+                                            <v-text-field 
+                                                v-model="fechaFinal" 
+                                                label="Ingrese fecha de finalización"
+                                                prepend-icon="event"
+                                                readonly
+                                                v-on="on"
+                                            ></v-text-field>
+                                        </template>
+                                        <v-date-picker v-model="fechaFinal" no-title scrollable>
+                                            <v-spacer></v-spacer>
+                                            <v-btn flat color="primary" @click="menu2 = false">Cancelar</v-btn>
+                                            <v-btn flat color="primary" @click="$refs.menu2.save(fechaFinal)">Guardar</v-btn>
+                                        </v-date-picker>
+                                    </v-menu>
+                                    <!-- Fin del date Time Picker -->
                                 </v-flex>
-                                <v-flex xs12 sm6 md6>
-                                    <v-text-field v-model="editedItem.contrasena" label="Contraseña"
-                                        :type="'password'"></v-text-field>
-                                </v-flex>
-                                <v-flex xs12 sm6 md6>
-                                    <v-text-field v-model="editedItem.repetir" label="Repetir contraseña"
-                                        :type="'password'"></v-text-field>
-                                </v-flex>
-                                <!-- <v-flex xs12 sm6 md6>
-                                    <multiselect v-model="idRol" :options="roles" placeholder="Seleccione un Rol"
-                                        label="nombre" track-by="nombre"></multiselect>
-                                </v-flex> -->
                             </v-layout>
                         </v-container>
                     </v-card-text>
-                    <template v-if="error">
+
+                     <template v-if="error">
                         <v-divider></v-divider>
-                        <div class="text-xs-center">
-                            <strong class="red--text text--lighten-1" v-for="e in errorMsj" :key="e"
-                                v-text="e"></strong>
+                        <div class="text-xs-center" v-for="e in errorMsj" :key="e">
+                            <strong class="red--text text--lighten-1" v-text="e"></strong>
                             <br>
                         </div>
                         <v-divider></v-divider>
                     </template>
+
                     <v-card-actions>
                         <v-spacer></v-spacer>
                         <v-btn color="blue darken-1" flat @click="close">Cancelar</v-btn>
-                        <v-btn color="blue darken-1" flat @click="save">Guardar</v-btn>
+                        <v-btn color="blue darken-1" v-if="editar===0" flat @click="registrarActividad">Guardar</v-btn>
+                        <v-btn color="blue darken-1" v-if="editar===1" flat @click="editarActividad()">Guardar</v-btn>
                     </v-card-actions>
                 </v-card>
-            </v-dialog>
+            </v-dialog><!-- Fin del dialogo crear proyecto -->
         </v-toolbar>
 
 
         <v-data-table :headers="headers" :items="actividades" class="elevation-1" :search="search">
             <template v-slot:items="props">
-                <td class="text-xs-left">{{ props.item.actidad }}</td>
-                <td class="text-xs-left">{{ props.item.tareas }}</td>
-                <td class="text-xs-left">{{ props.item.tareasCompletadas }}</td>
-                <td class="text-xs-left">{{ props.item.tareasPendientes }}</td>
-                <td class="text-xs-left">{{ props.item.fechaInicio }}</td>
-                <td class="text-xs-left">{{ props.item.fechaPendiente }}</td>
-                <td class="text-xs-left"><template>
-                        <div class="text-xs-left">
+                <td class="text-xs-right">{{ props.item.actividad }}</td>
+                <td class="text-xs-right">{{ props.item.tareas }}</td>
+                <td class="text-xs-right">{{ props.item.tareasCompletadas }}</td>
+                <td class="text-xs-right">{{ props.item.tareasPendientes }}</td>
+                <td class="text-xs-right">{{ props.item.fechaInicio }}</td>
+                <td class="text-xs-right">{{ props.item.fechaFinal }}</td>
+                <td class="text-xs-center">
+                    <template>
+                        <div>
                             <v-chip color="green" text-color="white" v-if="props.item.estado">Activo</v-chip>
                             <v-chip color="red" text-color="white" v-else>Desactivado</v-chip>
                         </div>
-                    </template></td>
+                    </template>
+                </td>
                 <td class="justify-left layout px-0">
-                    <v-icon small class="mr-2" v-if="props.item.estado" @click="desactivar(props.item)">
+                    <v-icon small class="mr-2" @click="abrirEditar(props.item)">
+                        edit
+                    </v-icon>
+                    <v-icon small class="mr-2" v-if="props.item.estado" @click="desactivar(props.item.id)">
                         block
                     </v-icon>
-                    <v-icon small class="mr-2" v-else @click="activar(props.item)">
+                    <v-icon small class="mr-2" v-else @click="activar(props.item.id)">
                         check_circle
                     </v-icon>
-                    <v-icon small @click="deleteItem(props.item)">
+                    <v-icon small @click="deleteItem(props.item.id)">
                         delete
                     </v-icon>
                 </td>
@@ -103,15 +159,22 @@
         },
         data: () => ({
             dialog: false,
+            menu: false,
+            menu2: false,
+            idActividad: 0,
+            editar: 0,
+            actividad: '',
+            fechaInicio: new Date().toISOString().substr(0, 10),
+            fechaFinal: new Date().toISOString().substr(0, 10),
             search: '',
             headers: [
-                { text: 'Actividad',value:'actividad' ,align: 'left'},
+                { text: 'Actividad',value:'actividad' ,align: 'right'},
                 { text: 'Tareas', value: 'tareas', align: 'right'},
-                { text: 'Tareas Completadas', value: 'tareasCompletas', align: 'right' },
-                { text: 'Tareas Pendientes', value: 'tareasPendienteas', align: 'right' },
+                { text: 'Tareas Completadas', value: 'tareasCompletadas', align: 'right' },
+                { text: 'Tareas Pendientes', value: 'tareasPendientes', align: 'right' },
                 { text: 'Fecha de Inicio', value: 'fechaInicio', align: 'right' },
-                { text: 'Fecha de Finalización', value: 'fechaFin', align: 'right' },
-                { text: 'Estado', value: 'estado', align: 'right' }
+                { text: 'Fecha de Finalización', value: 'fechaFinal', align: 'right' },
+                { text: 'Estado', value: 'estado', align: 'center' }
             ],
             error: 0,
             errorMsj: [],
@@ -142,7 +205,7 @@
 
         computed: {
             formTitle() {
-                return this.editedIndex === -1 ? 'Nuevo Usuario' : 'Editar Usuario'
+                return this.editedIndex === -1 ? 'Nueva Actividad' : 'Editar Actividad'
             }
         },
 
@@ -178,133 +241,248 @@
             validate() {
                 this.error = 0;
                 this.errorMsj = [];
-                // if (!this.editedItem.nombre)
-                //     this.errorMsj.push('El nombre no puede estar vacio');
-                                
+                if(!this.proyecto)
+                    this.errorMsj.push('No ha seleccionado ningún proyecto. Por favor seleccione uno.')
+                if (!this.actividad)
+                    this.errorMsj.push('El nombre de la actividad no puede estar vacío');
+                if (!this.fechaInicio)
+                    this.errorMsj.push('La fecha de inicio de la actividad no puede estar vacía');
+                if (!this.fechaFinal)
+                    this.errorMsj.push('La fecha de finalización de la actividad no puede estar vacía');
                 if (this.errorMsj.length)
                     this.error = 1;
+                else 
+                    this.error = 0;
                 return this.error;
             },
             initialize() {
                 var url='/Actividad?proyecto='+this.proyecto;
                 axios.get(url)
                     .then(response => {
+                        console.log(response.data);
                         this.actividades = response.data;
                     })
                     .catch(errors => {
                         console.log(errors);
                     });
             },
-            activar(item){
+            registrarActividad() {
+                let me = this;
+                if(this.validate() === 1) {
+                    return;
+                }
+                axios.post('actividad/registrar', {
+                    'actividad': me.actividad,
+                    'fechaInicio': me.fechaInicio,
+                    'fechaFinal': me.fechaFinal,
+                    'idProyecto': me.proyecto
+                })
+                .then(function (response) {
+                    console.log(response.data);
+                    if(!response.data) {
+                        swal.fire({
+                            type: 'success',
+                            title: 'Actividad Registrada!',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    } else{
+                        swal.fire({
+                            type: 'error',
+                            title: 'Se ha producido un error!',
+                            text: `Error al registrar actividad!`
+                        });
+                        me.close();
+                    }
+                    
+                    me.close();
+                    me.initialize();
+                })
+                .catch(function (error) {
+                    console.log(error.response);
+                    swal.fire({
+                        type: 'error',
+                        title: 'Se ha producido un error!',
+                        text: `Error al ingresar proyecto: ${error.response.data.message}`
+                    });
+                    me.close();
+                });
+            },
+            editarActividad() {
+                let me = this;
+                if(this.validate() === 1) {
+                    return;
+                }
+                axios.post('actividad/actualizar', {
+                    'actividad': me.actividad,
+                    'fechaInicio': me.fechaInicio,
+                    'fechaFinal': me.fechaFinal,
+                    'idProyecto': me.proyecto,
+                    'id': me.idActividad
+                })
+                .then(function (response) {
+                    console.log(response.data);
+                    if(!response.data) {
+                        swal.fire({
+                            type: 'success',
+                            title: 'Actividad editada!',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    } else{
+                        swal.fire({
+                            type: 'error',
+                            title: 'Se ha producido un error!',
+                            text: `Error al editar actividad!`
+                        });
+                        me.close();
+                    }
+                    me.close();
+                    me.initialize();
+                })
+                .catch(function (error) {
+                    console.log(error.response);
+                    swal.fire({
+                        type: 'error',
+                        title: 'Se ha producido un error!',
+                        text: `Error al ingresar proyecto: ${error.response.data.message}`
+                    });
+                    me.close();
+                });
+            },
+            activar(id){
+                let me=this;
+                const swalWithBootstrapButtons = swal.mixin({
+                    customClass: {
+                        confirmButton: 'btn btn-success',
+                        cancelButton: 'btn btn-danger'
+                    },
+                    buttonsStyling: false,
+                });
+                swalWithBootstrapButtons.fire({
+                    title: '¿Quieres activar esta actividad?',
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButton: 'Aceptar',
+                    cancelButtonText: 'Cancelar',
+                    reverseButtons: true
+                }).then((result) => {
+                    if(result.value) {
+                        axios.put('actividad/activate', {
+                            'id': id
+                        }).then(function (response) {
+                            me.initialize();
+                            swalWithBootstrapButtons.fire(
+                                'Activado',
+                                'La actividad ha sido activada!',
+                                'success'
+                            )
+                        }).catch(function (error) {
+                            swalWithBootstrapButtons.fire(
+                                'Error',
+                                'Error al activar actividad!',
+                                'error'
+                            )
+                        });
+                    } else{
+                        swalWithBootstrapButtons.fire(
+                            'Cancelado :('
+                        )
+                    }
+                });
+            },
+            desactivar(id){
+                let me=this;
+                const swalWithBootstrapButtons = swal.mixin({
+                    customClass: {
+                        confirmButton: 'btn btn-success',
+                        cancelButton: 'btn btn-danger'
+                    },
+                    buttonsStyling: false,
+                });
+                swalWithBootstrapButtons.fire({
+                    title: '¿Quieres desactivar esta actividad?',
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButton: 'Aceptar',
+                    cancelButtonText: 'Cancelar',
+                    reverseButtons: true
+                }).then((result) => {
+                    if(result.value) {
+                        axios.put('actividad/deactivate', {
+                            'id': id
+                        }).then(function (response) {
+                            me.initialize();
+                            swalWithBootstrapButtons.fire(
+                                'Desactivado',
+                                'La actividad ha sido desactivada!',
+                                'success'
+                            )
+                        }).catch(function (error) {
+                            console.log(error.response);
+                            swalWithBootstrapButtons.fire(
+                                'Error',
+                                'Error al desactivar actividad!',
+                                'error'
+                            )
+                        });
+                    } else{
+                        swalWithBootstrapButtons.fire(
+                            'Cancelado :('
+                        )
+                    }
+                });
+            },
+            deleteItem(id) {
                 let me=this;
                 swal.fire({
-                    title: 'Quieres activar a este Usuario?',
+                    title: '¿Quieres eliminar esta actividad?',
+                    text: "Esta acción no se podrá revertir",
                     type: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
                     cancelButtonColor: '#d33',
-                    confirmButtonText: 'Si, Activalo!',
+                    confirmButtonText: 'Eliminar',
                     cancelButtonText: "Cancelar"
                 }).then((result) => {
                     if (result.value) {
-                       axios({
-                        method: 'put',
-                        url: '/User/activar',
-                        data: {
-                            id:item.id,
-                            }
-                        }).then(response => {
+                        axios.put('/actividad/delete', {
+                            'id': id
+                        }).then(function(response) {
+                            console.log(response.data);
+                            swal.fire({
+                                type: 'success',
+                                title: 'Actividad eliminada',
+                                showConfirmButton: false,
+                                timer: 1500
+                            });
                             me.initialize();
+                        }).catch(function (error) {
+                            console.log('catch encontrado');
+                            console.log(error);
                             swal.fire({
-                            position: 'top-end',
-                            type: 'success',
-                            title: response.data,
-                            showConfirmButton: false,
-                            timer: 1500});
-                        }).catch(error => {
-                            swal.fire({
-                            position: 'top-end',
-                            type: 'error',
-                            title: error.response.data.error,
-                            showConfirmButton: true});
+                                type: 'error',
+                                title: `Error al eliminar actividad: ${error.response.data.message}`,
+                                showConfirmButton: true
+                            });
                         });
                     }
                 });
             },
-            desactivar(item){
-                let me=this;
-                swal.fire({
-                    title: 'Quieres desactivar a este Usuario?',
-                    type: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Si, Activalo!',
-                    cancelButtonText: "Cancelar"
-                }).then((result) => {
-                    if (result.value) {
-                       axios({
-                        method: 'put',
-                        url: '/User/desactivar',
-                        data: {
-                            id:item.id,
-                            }
-                        }).then(response => {
-                            me.initialize();
-                            swal.fire({
-                            position: 'top-end',
-                            type: 'success',
-                            title: response.data,
-                            showConfirmButton: false,
-                            timer: 1500});
-                        }).catch(error => {
-                            swal.fire({
-                            position: 'top-end',
-                            type: 'error',
-                            title: error.response.data.error,
-                            showConfirmButton: true});
-                        });
-                    }
-                });
+            abrirEditar(item) {
+                this.editar = 1;
+                this.dialog = true;
+                this.actividad = item.actividad;
+                this.fechaInicio = item.fechaInicio;
+                this.fechaFinal = item.fechaFinal;
+                this.idActividad = item.id;
             },
-            deleteItem(item) {
-                let me=this;
-                swal.fire({
-                    title: 'Quieres eliminar este Usuario?',
-                    text: "No podras revertir la eliminacion!",
-                    type: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Si, Eliminalo!',
-                    cancelButtonText: "Cancelar"
-                }).then((result) => {
-                    if (result.value) {
-                        axios.delete(`/User/${item.id}/delete`).then(response => {
-                            me.initialize();
-                            swal.fire({
-                            position: 'top-end',
-                            type: 'success',
-                            title: response.data,
-                            showConfirmButton: false,
-                            timer: 1500});
-                        }).catch(error => {
-                            swal.fire({
-                            position: 'top-end',
-                            type: 'error',
-                            title: error.response.data.error,
-                            showConfirmButton: true});
-                        });
-                    }
-                });
-            },
-
             close() {
-                this.dialog = false
-                setTimeout(() => {
-                    this.editedItem = Object.assign({}, this.defaultItem)
-                    this.editedIndex = -1
-                }, 300)
+                this.editar = 0;
+                this.dialog = false;
+                this.fechaInicio = '';
+                this.fechaFinal = '';
+                this.actividad = '';
             },
 
             save() {
